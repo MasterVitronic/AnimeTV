@@ -6402,8 +6402,8 @@ const _API={
       if (!_ISELECTRON){
         srv="Server "+srv;
       }
-      verel.innerHTML="<b>AnimeTV "+_JSAPI.getVersion(0)+" "+
-        "&copy; 2023-2024 AnimeTV</b><br />Build "+_JSAPI.getVersion(1)
+      verel.innerHTML="<b>AnimeMV "+_JSAPI.getVersion(0)+" "+
+        "&copy; 2023-2024 AnimeMV</b><br />Build "+_JSAPI.getVersion(1)
         +" - "+srv+" - Source "+__SD_NAME;
     }
   }catch(e){}
@@ -10640,7 +10640,7 @@ const pb={
                 pb.cfg_update_el(key);
               }
               else{
-                _API.confirm("Clear Cache","Clear AnimeTV Cache?",function(cnf){
+                _API.confirm("Clear Cache","Clear AnimeMV Cache?",function(cnf){
                   if (cnf){
                     _JSAPI.clearCache();
                   }
@@ -15679,7 +15679,7 @@ const home={
         home.settings.tools._s_homylist=$n(
           'div','',{
             action:'*homylist',
-            s_desc:'Set MyList as main page when AnimeTV started'
+            s_desc:'Set MyList as main page when AnimeMV started'
           },
           home.settings.performance.P,
           '<c class="check">clear</c><c>dvr</c> MyList Main Page'
@@ -17933,7 +17933,7 @@ const home={
           [
             {icon:'refresh',title:"Refresh Home"},
             {icon:'tune',title:"Customize Home"},
-            {icon:'cycle',title:"Reload AnimeTV"}
+            {icon:'cycle',title:"Reload AnimeMV"}
           ],
           0,
           function(chval){
@@ -18253,7 +18253,7 @@ const home={
           }
           else if (em==1){
             _API.confirm(false,
-              "<b><c>door_open</c> Exit AnimeTV?</b>",
+              "<b><c>door_open</c> Exit AnimeMV?</b>",
               function(cnf){
                 if (cnf){
                   _JSAPI.appQuit();

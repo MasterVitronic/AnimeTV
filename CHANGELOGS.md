@@ -1,4 +1,12 @@
 # Changelogs
+- **6.1.4-MV (AnimeMV)** 🔧
+  - **Fork personal de MasterVitronic**
+    - Firma de release propia, fuera del repositorio; eliminada la keystore de debug pública
+    - Java 17 (antes 8) y compilación limpia en Linux sin rutas de Windows
+    - `server.json` propio con versión 6.1.4-MV y URL de releases del fork
+    - CI de Android: debug en push/PR, release firmada manual
+    - Eliminado el permiso WRITE_SETTINGS, no utilizado
+    - Nombre visible: AnimeMV
 - **6.1.3** 🛠️
   - **Fix HTTP 403 blocking HLS stream playback**
     - Provider-supplied referer is now properly applied as the Origin header on all stream requests

@@ -8,17 +8,17 @@
   "stream_domain2": "megaf.cc",
   "update": "1.1-240624",
 
-  "appnum": 613,
-  "appver": "6.1.3",
-  "appsize": "6.15 MB",
-  "appurl": "https://github.com/BrutalBotX/AnimeTV/releases/download/6.1.3/animetv-6.1.3.apk",
-  "appnote": 
-    "- Fix HTTP 403 on HLS streams: video referer now correctly used as Origin header, matching the probe's validated behavior\n- Fix volatile videoReferer for thread-safe cross-thread visibility (WebView thread to UI thread)\n- Data source factory always honors provider-supplied referer as authoritative Origin header",
-  
-  "pcnum": 613,
-  "pcver": "6.1.3",
+  "appnum": 614,
+  "appver": "6.1.4-MV",
+  "appsize": "14 MB",
+  "appurl": "https://github.com/MasterVitronic/AnimeTV/releases/download/6.1.4-MV/animemv-6.1.4-release.apk",
+  "appnote":
+    "- AnimeMV: fork personal con firma propia, Java 17 y keystore publica eliminada\n- Sin cambios de proveedores en esta version",
+
+  "pcnum": 600,
+  "pcver": "6.0.0",
   "pcsize": "0 MB",
-  "pcurl": "https://github.com/BrutalBotX/AnimeTV/releases/download/6.1.3/animetv-6.1.3.asar.gz",
-  "pcnote": 
-    "- Fix HTTP 403 on HLS streams: video referer now correctly used as Origin header, matching the probe's validated behavior\n- Fix volatile videoReferer for thread-safe cross-thread visibility (WebView thread to UI thread)\n- Data source factory always honors provider-supplied referer as authoritative Origin header"
+  "pcurl": "",
+  "pcnote":
+    "- Desktop sin actualizaciones en este fork"
 }

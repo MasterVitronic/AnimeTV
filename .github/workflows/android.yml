@@ -1,0 +1,61 @@
+name: Android CI
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  debug:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+      - uses: android-actions/setup-android@v3
+      - uses: gradle/actions/setup-gradle@v4
+      - name: Build debug
+        run: |
+          chmod +x gradlew
+          ./gradlew assembleDebug
+      - uses: actions/upload-artifact@v4
+        with:
+          name: animetv-mv-debug
+          path: app/build/outputs/apk/debug/*.apk
+
+  release:
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+      - uses: android-actions/setup-android@v3
+      - uses: gradle/actions/setup-gradle@v4
+      - name: Configure signing
+        env:
+          KEYSTORE_BASE64: ${{ secrets.ANIMETV_KEYSTORE_BASE64 }}
+          STORE_PASSWORD: ${{ secrets.ANIMETV_STORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.ANIMETV_KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.ANIMETV_KEY_PASSWORD }}
+        run: |
+          if [ -z "$KEYSTORE_BASE64" ]; then
+            echo "Falta el secret ANIMETV_KEYSTORE_BASE64" >&2
+            exit 1
+          fi
+          echo "$KEYSTORE_BASE64" | base64 -d > "$RUNNER_TEMP/animetv.jks"
+          printf 'sdk.dir=%s\nanimetv.storeFile=%s\nanimetv.storePassword=%s\nanimetv.keyAlias=%s\nanimetv.keyPassword=%s\n' \
+            "$ANDROID_HOME" "$RUNNER_TEMP/animetv.jks" "$STORE_PASSWORD" "$KEY_ALIAS" "$KEY_PASSWORD" > local.properties
+      - name: Build release
+        run: |
+          chmod +x gradlew
+          ./gradlew assembleRelease
+      - uses: actions/upload-artifact@v4
+        with:
+          name: animetv-mv-release
+          path: app/build/outputs/apk/release/*.apk

@@ -1,8 +1,31 @@
-# AnimeTV
+# AnimeMV
 
 A cross-platform anime streaming app for Android TV, Google TV, Fire TV, smartphones, Windows, Linux, and macOS.
 
 Optimized for TV interfaces with full remote control navigation. No ads. No data collection. No analytics. Completely free and open source.
+
+> **AnimeMV — fork personal de MasterVitronic**
+>
+> Basado en el fork de BrutalBotX (v6.1.3, que a su vez parte del trabajo original de
+> amarullz, Apache-2.0). Esta rama se mantiene para uso propio y aprendizaje:
+>
+> - Firma de release **propia**, fuera del repositorio; la keystore de debug pública se ha eliminado.
+> - Java 17 y Gradle 8.13; compila en Linux sin rutas de Windows.
+> - `server.json` propio con versión `6.1.4-MV`; el autoupdate no ofrece nada mientras
+>   no se publique esa versión.
+> - CI de Android (debug en cada push, release firmada manual).
+>
+> **Build local**
+>
+> ```bash
+> export JAVA_HOME=/usr/lib/jvm/java-21-openjdk
+> export ANDROID_HOME=$HOME/Android/Sdk
+> sh tools/gen-keystore.sh      # solo la primera vez
+> sh gradlew assembleRelease
+> ```
+>
+> El APK queda en `app/build/outputs/apk/release/`. Las credenciales viven en
+> `local.properties` (ignorado por git).
 
 <p align="center">
   <img src="https://github.com/BrutalBotX/AnimeTV/assets/1386831/d05c7e5d-8abc-4fed-9183-0c58aa815c44" alt="Homescreen" width="45%">

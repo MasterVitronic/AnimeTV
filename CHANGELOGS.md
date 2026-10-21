@@ -1,4 +1,10 @@
 # Changelogs
+- **6.3.7-MV (AnimeMV)** ⭐
+  - **MyList: guardar y abrir items de catálogo**
+    - Bookmark e historial no persistían en AnimeFLV, TioAnime, Hentaila ni VeoHentai
+    - Causa: `_API.animeId()` devolvía `null` fuera de Anikage y el slug se usaba sin fuente
+    - Ahora el id es `"<fuente>:<slug>"`, así un mismo slug en dos sitios no colisiona
+    - Verificado en TV: guardar desde ficha, abrir desde MyList y continuar historial
 - **6.3.6-MV (AnimeMV)** 🇪🇸
   - **Nueva fuente: AnimeFLV (animeflv.or.at)**
     - Home con últimos episodios y archivo de series `/anime/page/N/`

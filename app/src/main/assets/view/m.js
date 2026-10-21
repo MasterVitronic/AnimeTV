@@ -4998,6 +4998,12 @@ const _API={
   },
 
   animeId:function(url){
+    if (__SDCAT){
+      // Catalog items are keyed by source slug; prefix the source so two sites with the same
+      // slug cannot share a watchlist/history entry.
+      var ckey=cat.keyOf(url);
+      return ckey?(__SDCAT_SOURCE()+':'+ckey):null;
+    }
     if (__SD3){
       var ux=url.split('/');
       if (ux.length>1){

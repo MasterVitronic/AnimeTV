@@ -1,4 +1,62 @@
 # Changelogs
+- **6.3.4-MV (AnimeMV)** 🛟
+  - **AniList caído: degradación limpia**
+    - AniList responde `403 "temporarily disabled due to severe stability issues"`
+    - `alreq` detecta el 403, avisa con un toast y no deja el Home en «Loading data...»
+    - Panel claro en el Home con el motivo y cómo cambiar a Hentaila/VeoHentai
+    - Búsqueda avisa si no hay resultados por el corte
+  - **Caché persistente de Anilili**
+    - Snapshot del último Home (`popular.json`) y de cada `Media` en `anilili_snapshots/`
+    - `getView` / `getVideoSources` reutilizan el `Media` cacheado si AniList falla
+- **6.3.3-MV (AnimeMV)** 🌐
+  - **Catálogo multi-fuente estable**
+    - `CatalogSource` + `CatalogRegistry`: añadir una web = una clase Kotlin, sin tocar el player
+    - `CatalogHttp`: cliente compartido con UA/Referer/Origin/XHR
+    - Hentaila y VeoHentai navegables, buscables y con ficha real
+  - **Reproducción de catálogo (sin WebView oculto)**
+    - Hentaila: handshake `x-secure-token` (rot13 + base64 ×3) → `api.php` → HLS 720p
+    - VeoHentai: `player.php` + PoW SHA-256 → URL MP4 firmada en R2
+    - `cat.loadVideo` + `extCatalogVideo` + `init_video` rama `__SDCAT`
+    - Subtítulos en español cargados aparte (overlay propio)
+  - **Fix HLS con subtítulos `.vtt` sueltos**
+    - `HlsManifestFixer` elimina renditions `TYPE=SUBTITLES` que no son playlists
+    - Evita `Input does not start with the #EXTM3U header` en ExoPlayer
+  - **Home de catálogo**
+    - Fila paginada propia y caché de 120 s (banner + fila comparten la página 1)
+  - **Diagnóstico**
+    - Consola JS a logcat (`ATVLOG-WEB`), logs de `sources` y cabecera/respuesta HLS
+  - **Limitación conocida**
+    - VeoHentai entrega 1080p H.264 High L5.0; el decoder del mt5867 lo rechaza
+- **6.2.0-MV (AnimeMV)** 🧪
+  - **Fix AnimeAV1: regex compatible con Android**
+    - El patrón de embeds usaba llaves literales (`\{ ... }`) que ART rechazaba con `Syntax error near index 33`
+    - Ahora se buscan solo los pares `server/url` y los corchetes van escapados
+- **6.1.9-MV (AnimeMV)** 🧪
+  - Build de validación: AnimeAV1 movido temporalmente al primer lugar de resolución
+- **6.1.8-MV (AnimeMV)** 🔧
+  - **Fix reproduccion TioAnime en TV**
+    - `AnimeView` fijaba `Referer` al dominio del servidor (`megaup.cc`) aunque el proveedor enviara otro
+    - vidcache respondia `500 Internal Server Error` a ese referer y ExoPlayer abortaba
+    - Ahora el referer del proveedor se aplica como `Origin` Y `Referer`
+- **6.1.7-MV (AnimeMV)** 🇪🇸
+  - **Nuevo proveedor: AnimeAV1 (español SUB/DUB)**
+    - Búsqueda en `/catalogo?search=` y episodios desde `episodes:[{id,number}]`
+    - Grupos de embeds SUB y DUB con preferencia por el audio solicitado
+    - MP4Upload resuelto a MP4 directo (verificado `206 Partial Content`)
+    - Zilla HLS como respaldo (`/play/{hash}` → `/m3u8/{hash}`)
+    - AnimeAV1 entra como segundo proveedor líder, tras TioAnime
+  - **Auto-actualizador propio**
+    - `AnimeApi` consulta el `server.json` de `MasterVitronic/AnimeTV`, no el upstream
+  - **Orden de resolución limpio**
+    - Senshi, AniBD y Anikai salen de `PROVIDER_NAMES` (estaban muertos)
+    - Orden actual: TioAnime, AnimeAV1, Anikoto, AniZone, AniNeko, AnimeGG, ReAnime, 2Dhive
+- **6.1.6-MV (AnimeMV)** 🇪🇸
+  - **Nuevo proveedor: TioAnime (español latino)**
+    - Búsqueda por título en `/directorio?q=`
+    - Catálogo de episodios desde `var episodes`
+    - Resolución de embeds: YourUpload → MP4 directo reproducible
+    - TioAnime se coloca como proveedor líder, por delante de Miruro y Anikoto
+    - La lista de servidores del WebView lo muestra como "TioAnime"
 - **6.1.5-MV (AnimeMV)** 🩺
   - **Auditoria de proveedores (2026-10-20)**
     - Senshi (`senshi.live`): sin respuesta → retirado del catalogo

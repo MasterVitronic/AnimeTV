@@ -4,19 +4,23 @@ public class Conf {
   public static String DOMAIN = "anilist.co";
   public static String[] SOURCE_DOMAINS={
       "anilist.co", /* default */
-      "anilist.co", "", "", "", "", "", "", "anilist.co"  /* indices 1-9, Anilili at 9 */
+      "anilist.co", "", "", "", "", "", "", "anilist.co", /* indices 1-9, Anilili at 9 */
+      "catalogo", "catalogo", "catalogo" /* 10-11: catálogos propios (VeoHentai, Hentaila) */
   };
   public static String SOURCE_DOMAIN5_API = "api.animeflix.dev";
   public static int SOURCE_DOMAIN = 9;
 
+  /** Number of site-based sources (indices 1-8). Above this, sources are catalog-only. */
+  public static final int SITE_SOURCE_MAX = 9;
+
   public static void updateSource(int num){
     SOURCE_DOMAIN=num;
-    if (num>0 && num<SOURCE_DOMAINS.length){
+    if (num>0 && num<SITE_SOURCE_MAX){
       SOURCE_DOMAINS[0]=DOMAIN=SOURCE_DOMAINS[num];
     }
   }
   public static String getDomain(){
-    if (SOURCE_DOMAIN>0 && SOURCE_DOMAIN<SOURCE_DOMAINS.length){
+    if (SOURCE_DOMAIN>0 && SOURCE_DOMAIN<SITE_SOURCE_MAX){
       return SOURCE_DOMAINS[SOURCE_DOMAIN];
     }
     return DOMAIN;

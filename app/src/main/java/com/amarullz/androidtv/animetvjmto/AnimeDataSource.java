@@ -456,6 +456,12 @@ import javax.net.ssl.HttpsURLConnection;
 
         // Check for a valid content type.
         String contentType = connection.getContentType();
+        if (dataSpec.uri.toString().contains(".m3u8")) {
+            Log.d("ATVLOG", "HLS-RESP " + responseCode + " ct=" + contentType
+                    + " len=" + connection.getHeaderField("Content-Length")
+                    + " enc=" + connection.getHeaderField("Content-Encoding")
+                    + " => " + dataSpec.uri);
+        }
 //        Log.d("ATVLOG", "DataSource: "+contentType+" = "+dataSpec.uri.toString());
 
         if (contentTypePredicate != null && !contentTypePredicate.apply(contentType)) {
@@ -492,6 +498,23 @@ import javax.net.ssl.HttpsURLConnection;
             inputStream = connection.getInputStream();
             if (isCompressed) {
                 inputStream = new GZIPInputStream(inputStream);
+            }
+            // Playlists are small: buffer them so we can also repair masters that advertise a bare
+            // .vtt as a subtitle rendition (ExoPlayer would parse it as a playlist and fail).
+            if (contentType != null && contentType.toLowerCase().contains("mpegurl")) {
+                byte[] raw = Util.toByteArray(inputStream);
+                String text = new String(raw, StandardCharsets.UTF_8);
+                String fixed = HlsManifestFixer.stripFileSubtitles(text);
+                byte[] outBytes = fixed.equals(text) ? raw : fixed.getBytes(StandardCharsets.UTF_8);
+                if (!fixed.equals(text)) {
+                    Log.d("ATVLOG", "HLS-FIX dropped .vtt renditions => " + dataSpec.uri);
+                }
+                if (!text.startsWith("#EXTM3U")) {
+                    Log.d("ATVLOG", "HLS-BAD-HEAD => " + dataSpec.uri + " : "
+                            + text.substring(0, Math.min(120, text.length())).replace("\n", "\\n"));
+                }
+                inputStream = new ByteArrayInputStream(outBytes);
+                bytesToRead = outBytes.length;
             }
         } catch (IOException e) {
             closeConnectionQuietly();

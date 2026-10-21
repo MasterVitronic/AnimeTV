@@ -2,6 +2,7 @@ package com.amarullz.androidtv.animetvjmto
 
 import android.util.Log
 import com.miruronative.data.ProviderCatalog
+import com.miruronative.data.model.Media
 import com.miruronative.data.remote.AniListClient
 import com.miruronative.data.remote.AnivexaClient
 import kotlinx.coroutines.Dispatchers
@@ -12,6 +13,7 @@ import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeout
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.encodeToString
 import okhttp3.Cache
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.OkHttpClient
@@ -57,6 +59,50 @@ object AnililiBridge {
     private val aniList: AniListClient by lazy { AniListClient(client, json) }
     private val anivexa: AnivexaClient by lazy { AnivexaClient(client, json, aniList) }
     private val mediaCache = HashMap<Int, com.miruronative.data.model.Media>()
+
+    /**
+     * AniList occasionally disables its public API (HTTP 403 "temporarily disabled due to severe
+     * stability issues"). Anilili is built on top of it, so without a snapshot the Home and the
+     * detail screen have nothing to show. These tiny files keep the last good response usable.
+     */
+    private fun snapshotFile(name: String): File? {
+        val base = AnimeApi.okCacheDir ?: return null
+        val dir = File(base, "anilili_snapshots")
+        if (!dir.exists()) dir.mkdirs()
+        return File(dir, name)
+    }
+
+    private fun readSnapshot(name: String): String? = try {
+        snapshotFile(name)?.takeIf { it.isFile }?.readText()?.takeIf { it.isNotBlank() }
+    } catch (e: Exception) {
+        Log.w(TAG, "snapshot read $name failed: ${e.message}")
+        null
+    }
+
+    private fun writeSnapshot(name: String, text: String) {
+        try {
+            snapshotFile(name)?.writeText(text)
+        } catch (e: Exception) {
+            Log.w(TAG, "snapshot write $name failed: ${e.message}")
+        }
+    }
+
+    private fun cachedMedia(id: Int): Media? = mediaCache[id] ?: try {
+        readSnapshot("media-$id.json")
+            ?.let { json.decodeFromString<Media>(it) }
+            ?.also { mediaCache[id] = it }
+    } catch (e: Exception) {
+        null
+    }
+
+    private fun persistMedia(media: Media) {
+        mediaCache[media.id] = media
+        try {
+            writeSnapshot("media-${media.id}.json", json.encodeToString(media))
+        } catch (e: Exception) {
+            Log.w(TAG, "persist media ${media.id} failed: ${e.message}")
+        }
+    }
 
     /** Short-timeout client for stream reachability checks. */
     private val probeClient: OkHttpClient by lazy {
@@ -106,12 +152,12 @@ object AnililiBridge {
     }
 
     private fun media(id: Int): com.miruronative.data.model.Media? {
-        return mediaCache[id] ?: runBlocking {
-            withContext(Dispatchers.IO) { aniList.animeInfo(id) }?.also { mediaCache[id] = it }
+        return cachedMedia(id) ?: runBlocking {
+            withContext(Dispatchers.IO) { aniList.animeInfo(id) }?.also { persistMedia(it) }
         }
     }
 
-    val PROVIDER_NAMES = listOf("senshi", "anikoto", "anibd", "anizone", "anineko", "animegg", "reanime", "2dhive", "anikai")
+    val PROVIDER_NAMES = listOf("tioanime", "animeav1", "anikoto", "anizone", "anineko", "animegg", "reanime", "2dhive")
 
     @JvmStatic
     fun search(query: String, page: Int): String = runBlocking {
@@ -133,10 +179,12 @@ object AnililiBridge {
                 item.put("genres", media.genres?.joinToString() ?: "[]")
                 out.put(item)
             }
-            out.toString()
+            out.toString().also {
+                if (query.isEmpty()) writeSnapshot("popular.json", it)
+            }
         } catch (e: Exception) {
             Log.e(TAG, "search error: ${e.message}", e)
-            "[]"
+            if (query.isEmpty()) readSnapshot("popular.json") ?: "[]" else "[]"
         }
     }
 
@@ -158,19 +206,19 @@ object AnililiBridge {
                 item.put("type", media.format ?: "TV")
                 out.put(item)
             }
-            out.toString()
+            out.toString().also { writeSnapshot("popular.json", it) }
         } catch (e: Exception) {
             Log.e(TAG, "getPopular error: ${e.message}", e)
-            "[]"
+            readSnapshot("popular.json") ?: "[]"
         }
     }
 
     @JvmStatic
     fun getView(anilistId: Int): String = runBlocking {
         try {
-            val media = withTimeout(20000) {
+            val media = cachedMedia(anilistId) ?: withTimeout(20000) {
                 withContext(Dispatchers.IO) { aniList.animeInfo(anilistId) }
-            }
+            }?.also { persistMedia(it) }
             if (media == null) return@runBlocking """{"status":false,"error":"Anime $anilistId not found"}"""
             mediaCache[anilistId] = media
 
@@ -227,7 +275,7 @@ object AnililiBridge {
     @JvmStatic
     fun getVideoSources(anilistId: Int, episodeNum: Int, category: String): String = runBlocking {
         val cat = if (category == "dub") "dub" else "sub"
-        var seedMedia = mediaCache[anilistId]
+        var seedMedia = cachedMedia(anilistId)
         val errors = mutableListOf<String>()
 
         Log.d(TAG, "getVideoSources: id=$anilistId ep=$episodeNum cat=$cat")
@@ -236,7 +284,7 @@ object AnililiBridge {
             seedMedia = try {
                 withTimeout(15000) {
                     withContext(Dispatchers.IO) { aniList.animeInfo(anilistId) }
-                }
+                }?.also { persistMedia(it) }
             } catch (e: TimeoutCancellationException) {
                 Log.e(TAG, "getVideoSources: emergency AniList fetch timed out")
                 null

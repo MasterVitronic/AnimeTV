@@ -2,16 +2,29 @@
 const body=document.body;
 /* const _DNS="9anime.to"; */
 const __DNS=('_JSAPI' in window)?_JSAPI.dns():"anilist.co";
-const __SD=9;
 
 /* Source Constants */
 const __SDKAI=false;
 const __SD3=false;
 const __SD5=false;
+const __SD=(function(){
+  try{
+    var s=_JSAPI.getSd();
+    if (s>=9 && s<=11) return s;
+  }catch(e){}
+  return 9;
+})();
 const __SD6=false;
 const __SD7=false;
 const __SD8=false;
-const __SD9=true;
+const __SD9=(__SD==9);
+const __SDCAT=(__SD>=10);
+
+function __SDCAT_SOURCE(){
+  if (__SD==10) return 'veohentai';
+  if (__SD==11) return 'hentaila';
+  return '';
+}
 
 /* Extension Callback Registry */
 var __EXT_CB_ID=0;
@@ -36,11 +49,11 @@ var _TOUCH=false;
 var _ISELECTRON=('isElectron' in _JSAPI);
 
 const __SOURCE_NAME=[
-  '', '', '', '', '', '', '', '', 'Anilili'
+  '', '', '', '', '', '', '', '', 'Anilili', 'VeoHentai', 'Hentaila'
 ];
 
 const __SOURCE_DOMAINS=[
-  [],[],[],[],[],[],[],[],['anilist.co']
+  [],[],[],[],[],[],[],[],['anilist.co'],[],[]
 ];
 
 /* video res change */
@@ -92,6 +105,10 @@ function SD_CHECK_DOMAIN(sd,cb){
   // Anilili (source 9, sm=8): always succeed, no domain benchmark needed
   if (sm==8){
     cb([{dn:'Anilili',st:2,tm:0}]);
+    return true;
+  }
+  if (sm>=9){
+    cb([{dn:__SOURCE_NAME[sm]||'Catalogo',st:2,tm:0}]);
     return true;
   }
   var domains=__SOURCE_DOMAINS[sm];
@@ -1533,7 +1550,7 @@ var anikage={
           epavail:v.epavail||0, epdub:v.epdub||0, genres:genreArr,
           type:v.type||'TV', rating:'', streamtype:v.streamtype||'sub',
           servers:{
-            sub:[{n:"Bonk",p:0},{n:"Kiwi",p:1},{n:"Pewe",p:2},{n:"Bee",p:3},{n:"Ally",p:4},{n:"Moo",p:5},{n:"Hop",p:6},{n:"Senshi",p:7},{n:"Anikoto",p:8},{n:"AniBD",p:9},{n:"AniZone",p:10},{n:"AniNeko",p:11},{n:"AnimeGG",p:12},{n:"ReAnime",p:13},{n:"2DHive",p:14},{n:"AnimeKai",p:15}],
+            sub:[{n:"Bonk",p:0},{n:"Kiwi",p:1},{n:"Pewe",p:2},{n:"Bee",p:3},{n:"Ally",p:4},{n:"Moo",p:5},{n:"Hop",p:6},{n:"Senshi",p:7},{n:"Anikoto",p:8},{n:"AniBD",p:9},{n:"AniZone",p:10},{n:"AniNeko",p:11},{n:"AnimeGG",p:12},{n:"ReAnime",p:13},{n:"2DHive",p:14},{n:"TioAnime",p:15},{n:"AnimeAV1",p:16}],
             dub:[], softsub:[]
           },
           stream_url:v.stream_url||{sub:'',dub:'',softsub:''}, stream_vurl:'',
@@ -1572,7 +1589,7 @@ var anikage={
         synopsis:m.description||'',poster:m.coverImage?(m.coverImage.extraLarge||m.coverImage.large||''):'',banner:m.bannerImage||'',
         url:slug,ttid:slug,idMal:m.idMal||0,epactive:0,quality:null,genre:genres.join(', '),
         ep:episodes,epavail:actualEpCount,epdub:actualEpCount,genres:genreArr,type:m.format||'TV',rating:'',streamtype:'sub',
-        servers:{sub:[{n:"Bonk",p:0},{n:"Kiwi",p:1},{n:"Pewe",p:2},{n:"Bee",p:3},{n:"Ally",p:4},{n:"Moo",p:5},{n:"Hop",p:6},{n:"Senshi",p:7},{n:"Anikoto",p:8},{n:"AniBD",p:9},{n:"AniZone",p:10},{n:"AniNeko",p:11},{n:"AnimeGG",p:12},{n:"ReAnime",p:13},{n:"2DHive",p:14},{n:"AnimeKai",p:15}],dub:[],softsub:[]},
+        servers:{sub:[{n:"Bonk",p:0},{n:"Kiwi",p:1},{n:"Pewe",p:2},{n:"Bee",p:3},{n:"Ally",p:4},{n:"Moo",p:5},{n:"Hop",p:6},{n:"Senshi",p:7},{n:"Anikoto",p:8},{n:"AniBD",p:9},{n:"AniZone",p:10},{n:"AniNeko",p:11},{n:"AnimeGG",p:12},{n:"ReAnime",p:13},{n:"2DHive",p:14},{n:"TioAnime",p:15},{n:"AnimeAV1",p:16}],dub:[],softsub:[]},
         stream_url:{sub:'',dub:'',softsub:''},stream_vurl:'',skip:[[0,0],[0,0]],related:[],seasons:[],recs:[],
         info:{type:{val:'_'+((m.format||'TV')+'').toUpperCase(),name:((m.format||'TV')+'').toUpperCase()},rating:'',quality:null}});
     },true);
@@ -1589,7 +1606,7 @@ var anikage={
       }
       var genreArr=[];
       if(cached.genres)for(var jj=0;jj<cached.genres.length;jj++){genreArr.push({name:cached.genres[jj],val:'_'+cached.genres[jj].toUpperCase().replace(/ /g,'_')});}
-      f({status:true,title:cached.title.english||cached.title.romaji,title_jp:cached.title.romaji,synopsis:'',poster:cached.coverImage?(cached.coverImage.large||cached.coverImage.medium):'',banner:'',url:slug,ttid:slug,idMal:0,epactive:0,quality:null,genre:(cached.genres||[]).join(', '),ep:episodes,epavail:actualEpCount,epdub:actualEpCount,genres:genreArr,type:cached.format||'TV',rating:'',streamtype:'sub',servers:{sub:[{n:"Bonk",p:0},{n:"Kiwi",p:1},{n:"Pewe",p:2},{n:"Bee",p:3},{n:"Ally",p:4},{n:"Moo",p:5},{n:"Hop",p:6},{n:"Senshi",p:7},{n:"Anikoto",p:8},{n:"AniBD",p:9},{n:"AniZone",p:10},{n:"AniNeko",p:11},{n:"AnimeGG",p:12},{n:"ReAnime",p:13},{n:"2DHive",p:14},{n:"AnimeKai",p:15}],dub:[],softsub:[]},stream_url:{sub:'',dub:'',softsub:''},stream_vurl:'',skip:[[0,0],[0,0]],related:[],seasons:[],recs:[],info:{type:{val:'_'+(cached.format||'TV').toUpperCase(),name:(cached.format||'TV').toUpperCase()},rating:'',quality:null}});
+      f({status:true,title:cached.title.english||cached.title.romaji,title_jp:cached.title.romaji,synopsis:'',poster:cached.coverImage?(cached.coverImage.large||cached.coverImage.medium):'',banner:'',url:slug,ttid:slug,idMal:0,epactive:0,quality:null,genre:(cached.genres||[]).join(', '),ep:episodes,epavail:actualEpCount,epdub:actualEpCount,genres:genreArr,type:cached.format||'TV',rating:'',streamtype:'sub',servers:{sub:[{n:"Bonk",p:0},{n:"Kiwi",p:1},{n:"Pewe",p:2},{n:"Bee",p:3},{n:"Ally",p:4},{n:"Moo",p:5},{n:"Hop",p:6},{n:"Senshi",p:7},{n:"Anikoto",p:8},{n:"AniBD",p:9},{n:"AniZone",p:10},{n:"AniNeko",p:11},{n:"AnimeGG",p:12},{n:"ReAnime",p:13},{n:"2DHive",p:14},{n:"TioAnime",p:15},{n:"AnimeAV1",p:16}],dub:[],softsub:[]},stream_url:{sub:'',dub:'',softsub:''},stream_vurl:'',skip:[[0,0],[0,0]],related:[],seasons:[],recs:[],info:{type:{val:'_'+(cached.format||'TV').toUpperCase(),name:(cached.format||'TV').toUpperCase()},rating:'',quality:null}});
     }
     else{
       f({status:false});
@@ -1634,6 +1651,103 @@ var anikage={
       }
       else{
         cb({error:v?(''+v.error):'Failed to load video'});
+      }
+    }));
+  }
+};
+
+/* EXTERNAL CATALOG SOURCE (Hentaila, VeoHentai, ...)
+ * Same contract as anikage, but the Java side owns key parsing so a source only has to implement
+ * CatalogSource. Adding a source: implement it in Kotlin, register it in CatalogRegistry, and add
+ * its id/label to __SOURCE_NAME + __SDCAT_SOURCE above. Nothing here needs to change. */
+var cat={
+  source:function(){
+    return __SDCAT_SOURCE();
+  },
+  keyOf:function(url){
+    var s=((url||'')+'').split('#')[0];
+    if (/\/(ep|episodio)-\d+\/?$/i.test(s)){
+      s=s.replace(/\/(ep|episodio)-\d+\/?$/i,'');
+    }
+    if (s.indexOf('/')>=0) s=s.substring(s.lastIndexOf('/')+1);
+    return s;
+  },
+  epOf:function(url){
+    var raw=((url||'')+'');
+    var p=raw.split('#');
+    if (p.length>1) return toInt(p[1]);
+    var m=/\/(?:ep|episodio)-(\d+)\/?$/i.exec(raw);
+    return m?toInt(m[1]):0;
+  },
+  viewToData:function(v,key,clickedEp){
+    var list=v.episodes||[];
+    var eps=list.map(function(e,i){
+      var num=toInt(e.ep)||(i+1);
+      return {
+        ep:num,
+        url:e.url||(key+'#'+num),
+        active:clickedEp?((num==clickedEp)):(i==0),
+        title:e.title||('Episodio '+num),
+        title_jp:'',
+        dub:e.dub?true:false,
+        filler:false,
+        token:'',
+        epuri:e.epuri||(key+'#'+num)
+      };
+    });
+    return {
+      status:true,
+      title:v.title,
+      title_jp:v.title_jp||v.title,
+      synopsis:v.synopsis||'',
+      poster:v.poster||'',
+      banner:v.banner||v.poster||'',
+      url:key,
+      ttid:key,
+      idMal:0,
+      epactive:0,
+      quality:null,
+      genre:'',
+      ep:eps,
+      epavail:v.epavail||eps.length,
+      epdub:0,
+      genres:[],
+      type:v.type||'TV',
+      rating:'',
+      streamtype:v.streamtype||'sub',
+      servers:{sub:[{n:__SOURCE_NAME[__SD-1]||'Catalogo',p:0}],dub:[],softsub:[]},
+      stream_url:v.stream_url||{hard:'',soft:key,dub:''},
+      stream_vurl:'',
+      skip:[[0,0],[0,0]],
+      related:[],
+      seasons:[],
+      recs:[],
+      info:{
+        type:{val:'_'+((v.type||'TV')+'').toUpperCase(),name:((v.type||'TV')+'').toUpperCase()},
+        rating:'',
+        quality:null
+      }
+    };
+  },
+  loadVideo:function(dt,cb){
+    var url=dt.url||'';
+    var key=cat.keyOf(url);
+    var epNum=cat.epOf(url)||1;
+    if (dt.ep && dt.epactive!=null && dt.ep[dt.epactive]){
+      epNum=toInt(dt.ep[dt.epactive].ep)||epNum;
+    }
+    var audio=_API.currentStreamType==2?'dub':(_API.currentStreamType==1?'ssub':'sub');
+    console.log('ATVLOG catalog loadVideo: '+cat.source()+' / '+key+' / '+epNum+' / '+audio);
+    _JSAPI.extCatalogVideo(cat.source(),key,epNum,audio,__EXT_REG_CB(function(v){
+      if (v && v.sources && v.sources.length>0){
+        cb({
+          sources:v.sources,
+          subtitles:v.subtitles||[],
+          skip:v.skip||[[0,0],[0,0]]
+        });
+      }
+      else{
+        cb({error:(v&&v.error)?(''+v.error):'No hay fuentes para este episodio'});
       }
     }));
   }
@@ -5272,6 +5386,20 @@ const _API={
   /* get anime player view data */
   getView:function(url, f){
     var uid=++_API.viewid;
+    if (__SDCAT){
+      var key=cat.keyOf(url);
+      var clicked=cat.epOf(url);
+      console.log('ATVLOG catalog getView: '+cat.source()+' / '+key+' / ep='+clicked);
+      _JSAPI.extCatalogView(cat.source(),key,__EXT_REG_CB(function(v){
+        if (v && v.status){
+          f(cat.viewToData(v,key,clicked),uid);
+        }
+        else{
+          f(v||{status:false},uid);
+        }
+      }));
+      return uid;
+    }
     anikage.getView(url, function(d){
       f(d, uid);
     });
@@ -5908,6 +6036,37 @@ const _API={
 
   getTooltip:function(id, cb, url, isview){
     console.log("GET TOOLTIP = "+id);
+    if (__SDCAT){
+      // Catalog entries are keyed by source slug, not by AniList id. Resolve the detail through
+      // the same bridge the player uses, so the popup shows the real synopsis and episode count.
+      if (!url){
+        cb(null);
+        return;
+      }
+      var ckey=cat.keyOf(url)||(''+id);
+      _JSAPI.extCatalogView(cat.source(),ckey,__EXT_REG_CB(function(v){
+        if (!v || !v.status){
+          cb(null);
+          return;
+        }
+        var gl=v.genres||[];
+        if (typeof gl==='string'){
+          gl=gl.replace(/[\[\]"]/g,'').split(',').map(function(s){return s.trim();}).filter(function(s){return s;});
+        }
+        var genreArr=[];
+        for (var j=0;j<gl.length;j++){
+          if (gl[j]) genreArr.push({name:gl[j],val:'_'+(''+gl[j]).toUpperCase().replace(/ /g,'_')});
+        }
+        cb({
+          title:v.title, title_jp:v.title_jp||v.title, synopsis:v.synopsis||'',
+          genres:genreArr, genre:(typeof v.genres==='string'?v.genres:gl.join(', ')),
+          rating:'', status:v.status_text||'', type:v.type||'TV',
+          poster:v.poster||'', banner:v.banner||v.poster||'',
+          ttid:ckey, url:ckey, ep:v.epavail||0, epavail:v.epavail||0, epdub:0
+        });
+      }));
+      return;
+    }
     if (__SD6){
       return kaas.getTooltip(id, cb, url, 0);
     }
@@ -8567,8 +8726,14 @@ const pb={
         pb.init_video_mp4upload(nx.file);
       }
       else{
+        var errdet='';
+        try{ errdet=_JSAPI.videoGetError?(''+_JSAPI.videoGetError()):''; }catch(e){}
+        var errmsg="Video failed to play.\nAll available sources failed. Try another episode.";
+        if (/decoder|codec|mediacodec/i.test(errdet)){
+          errmsg="Este video no es compatible con el decodificador de la TV.\nPrueba otro episodio o cambia de fuente.";
+        }
         pb.video_src_list=null;
-        pb.playback_error('PLAYBACK ERROR',"Video failed to play.\nAll available sources failed. Try another episode.");
+        pb.playback_error('PLAYBACK ERROR',errmsg);
       }
     }
     else if (c=='complete'){
@@ -9259,7 +9424,48 @@ const pb={
       pb.pb_track_pos.innerHTML='LOADING SERVER';
       pb.pb_track_dur.innerHTML='';
 
-      if (__SD3){
+      if (__SDCAT){
+        /* External catalog source (Hentaila, VeoHentai, ...) */
+        cat.loadVideo(pb.data, function(v){
+          console.log('ATVLOG CATALOG LOAD VIDEO: ',v);
+          if (!v || v.error){
+            pb.playback_error(
+              'PLAYBACK ERROR',
+              (v&&v.error)?(''+v.error):"Loading video from source failed.\nTry changing mirror or check source server."
+            );
+            return;
+          }
+          vtt.clear();
+          pb.subtitles=[];
+          var n=(v.subtitles||[]).length;
+          for (var i=0;i<n;i++){
+            var tk=v.subtitles[i];
+            pb.subtitles.push({
+              u:tk.file||tk.url,
+              d:(i==0)?1:0,
+              l:((tk.label||tk.lang||'')+'').toLowerCase().trim(),
+              i:((tk.lang||tk.label||'')+'').toLowerCase().trim()
+            });
+          }
+          vtt.init(pb.subtitles);
+          pb.data.skip=[[0,0],[0,0]];
+          if (v.skip && v.skip[0]){ pb.data.skip[0]=v.skip[0]; }
+          if (v.skip && v.skip[1]){ pb.data.skip[1]=v.skip[1]; }
+          pb.updateStreamTypeInfo();
+          if (v.sources && v.sources.length>0){
+            pb.video_src_list=v.sources;
+            pb.video_src_idx=0;
+            try{ _JSAPI.videoSetReferer(v.sources[0].referer||""); }catch(e){}
+            console.log('ATVLOG CATALOG playing: '+v.sources[0].file+' ('+v.sources.length+')');
+            pb.init_video_mp4upload(v.sources[0].file);
+          }
+          else{
+            pb.playback_error('PLAYBACK ERROR','No video sources available.');
+          }
+          pb.cfg_update_el();
+        });
+      }
+      else if (__SD3){
         /* Get Servers - HIANIME */
         pb.hiLoadVideo(pb.data, true, function(){
           pb.updateStreamTypeInfo();
@@ -13563,6 +13769,8 @@ const home={
     }
   },
   home_anilist_parse:function(g,v){
+    var lh=$('home_lists');
+    if (lh){ lh.style.display=''; }
     home.home_slide.innerHTML='';
     home.home_pager.innerHTML='';
     pb.menu_clear(home.home_slide);
@@ -13646,6 +13854,24 @@ const home={
       home.home_slide._enter_cb=home.anilist_play_cb;
     }
   },
+  anilist_down_panel:function(g){
+    try{
+      g.innerHTML='<div style="position:absolute;left:4vw;top:30%;max-width:72vw;color:#d8d8d8;font-size:1.55vw;line-height:1.55">'+
+        '<b style="font-size:2.1vw;color:#fff">AniList no disponible</b><br><br>'+
+        'La API de AniList responde <b>403</b>:<br><i>'+special(_MAL.unavailableMsg||'temporarily disabled')+'</i><br><br>'+
+        'Anilili necesita AniList para el catálogo y los datos.<br>'+
+        'Cambia a <b>Hentaila</b> o <b>VeoHentai</b> en <b>Sources</b> (pulsa LEFT).<br>'+
+        'Cuando AniList vuelva, usa <b>Refresh Home</b>.'+
+        '</div>';
+      g.setAttribute('list-title','AniList no disponible');
+      // AniList-backed rows would sit forever on "Loading data..."; hide them while it is down.
+      var lh=$('home_lists');
+      if (lh){ lh.style.display='none'; }
+      pb.menu_init(g);
+    }catch(e){
+      console.log('ATVLOG anilist down panel error: '+e);
+    }
+  },
   home_anilist_load:function(){
     home.home_onload=1;
     home.home_slide.setAttribute('list-title','AniList Trending');
@@ -13697,14 +13923,103 @@ const home={
       page:1,
       perPage:10
     },function(v){
-      if (v){
+      if (v && v.data){
         try{
           home.home_anilist_parse(home.home_slide,v);
           return;
         }catch(e){}
-        home.home_onload=0;
       }
+      home.home_onload=0;
+      home.anilist_down_panel(home.home_slide);
     },true);
+  },
+
+  home_catalog_load:function(){
+    home.home_onload=1;
+    var name=__SOURCE_NAME[__SD-1]||'Catalogo';
+    home.home_slide.setAttribute('list-title',name+' - Ultimos');
+    var src=__SDCAT_SOURCE();
+    function parse(v){
+      try{
+        home.home_anilist_parse(home.home_slide,v);
+      }catch(e){
+        console.log('ATVLOG catalog parse error: '+e);
+      }
+      home.home_onload=0;
+    }
+    if (home.cat_first_page){
+      var cached=home.cat_first_page;
+      home.cat_first_page=null;
+      parse(cached);
+      return;
+    }
+    try{
+      _JSAPI.extCatalogHome(src,1,__EXT_REG_CB(parse));
+    }catch(e){
+      console.log('ATVLOG catalog home error: '+e);
+      home.home_onload=0;
+    }
+  },
+
+  /* Horizontal row for catalog sources. Both the banner and the row need page 1, so whoever asks
+   * first fetches it and leaves it in cat_first_page for the other one. */
+  cat_first_page:null,
+  catalog_row_loader:function(g){
+    g._onload=1;
+    var page=g._page||1;
+    function parse(v){
+      try{
+        home.catalog_row_parse(g,v);
+      }catch(e){
+        console.log('ATVLOG catalog row parse error: '+e);
+      }
+      g._onload=0;
+    }
+    if (page==1 && home.cat_first_page){
+      var cached=home.cat_first_page;
+      home.cat_first_page=null;
+      parse(cached);
+      return;
+    }
+    _JSAPI.extCatalogHome(__SDCAT_SOURCE(),page,__EXT_REG_CB(function(v){
+      if (page==1){
+        home.cat_first_page=v;
+      }
+      parse(v);
+    }));
+  },
+  catalog_row_parse:function(g,v){
+    if (!v || !v.data || !v.data.Page){
+      return;
+    }
+    var page=v.data.Page;
+    if (page.pageInfo && !page.pageInfo.hasNextPage){
+      g._page=100;
+    }
+    var media=page.media||[];
+    for (var i=0;i<media.length;i++){
+      var d=media[i];
+      var malid='anilistmedia_'+d.id;
+      _MAL.aldata[malid]=d;
+      var hl=$n('div','',{action:'#'+malid,arg:''},g.P,'');
+      var cov=d.coverImage?(d.coverImage.large||d.coverImage.medium):'';
+      hl._img=$n('img','',{loading:'lazy',src:$img(cov)},hl,'');
+      hl._title=$n('b','',{jp:d.title.romaji||d.title.english},hl,tspecial(d.title.english||d.title.romaji));
+      var infotxt='';
+      if (d.format){
+        infotxt+='<span class="info_type">'+special((''+d.format).toUpperCase())+'</span>';
+      }
+      if (d.episodes){
+        infotxt+='<span class="info_sumep"><c>bookmark</c>'+special(''+d.episodes)+'</span>';
+      }
+      if (infotxt){
+        hl._ep=$n('span','info',null,hl,infotxt);
+      }
+    }
+    pb.menu_init(g);
+    if (!g._sel && g.P.firstElementChild){
+      pb.menu_select(g,g.P.firstElementChild);
+    }
   },
 
   home_load:function(){
@@ -13771,6 +14086,10 @@ const home={
       el.__last_touch=$tick()+5000;
     });
 
+    if (__SDCAT){
+      home.home_catalog_load();
+      return;
+    }
     if (__SD6||pb.cfg_data.alisthomess||(__SD==2)||__SD7||__SD8||__SD9){
       home.home_anilist_load();
       return;
@@ -14185,7 +14504,16 @@ const home={
     home.homepage_initialized=true;
 
     var homepage=[];
-    if (__SD3){
+    if (__SDCAT){
+      // External catalog: one paged row with everything the source returns. Page 1 is shared with
+      // the banner request, so the home costs a single network round-trip.
+      homepage=[
+        ["catall", function(el){
+          home.recent_init(el, home.catalog_row_loader);
+        }, (__SOURCE_NAME[__SD-1]||'Catalogo')+' - Ultimos', true]
+      ];
+    }
+    else if (__SD3){
       // hianime
       homepage=[
         ["recent","/recently-updated?page=", "Recently Updated", true],
@@ -15205,7 +15533,7 @@ const home={
       var active=(__SD==i+1);
       var seldomain=_JSAPI.storeGet(SD_CFGNAME(i+1),"");
       if (!seldomain){
-        seldomain=__SOURCE_DOMAINS[i][0];
+        seldomain=(__SOURCE_DOMAINS[i]&&__SOURCE_DOMAINS[i][0])?__SOURCE_DOMAINS[i][0]:'catalogo';
       }
       if ((i==4)||(i==1)||(i==3)) {
         /* Parental will not work on source 5 */
@@ -16525,6 +16853,56 @@ const home={
 
       if (home.search.kw.value!=''||home.search.genreval.length>0){
         if ((home.search.src.cfg.anilist&&!home.search.noanilist) || true){
+          if (__SDCAT){
+            var catkw=home.search.kw.value;
+            var catpage=getpage?getpage:1;
+            if (!getpage||(getpage<=1)){
+              var rc=home.search.res;
+              rc._page=1;
+              rc._havenext=false;
+              pb.menu_clear(rc);
+              rc._nojump=true;
+              pb.menu_init(rc);
+              rc._spre=[];
+              rc._spost=[];
+              rc._onload=0;
+              rc._sel=null;
+            }
+            home.search.res.classList.add('searching');
+            home.search.res._onload=1;
+            _JSAPI.extCatalogSearch(__SDCAT_SOURCE(),catkw,catpage,__EXT_REG_CB(function(v){
+              var rd=[];
+              if (v && v.data && v.data.Page && v.data.Page.media){
+                var media=v.data.Page.media;
+                for (var i=0;i<media.length;i++){
+                  var d=media[i];
+                  rd.push({
+                    url:''+d.id,
+                    title:(d.title&&(d.title.english||d.title.romaji))||'',
+                    title_jp:(d.title&&d.title.romaji)||'',
+                    tip:''+d.id,
+                    poster:(d.coverImage&&d.coverImage.large)||'',
+                    epsub:''+(d.episodes||0),
+                    epdub:'0',
+                    ep:''+(d.episodes||0),
+                    eptotal:''+(d.episodes||0),
+                    type:d.format||'',
+                    genres:[],
+                    adult:false,
+                    rating:'',
+                    duration:''
+                  });
+                }
+                home.search.dosearch_parse_rd(rd);
+                if (home.search.history.add(catkw)){
+                  home.search.src.init_search_history();
+                }
+              }
+              home.search.res.classList.remove('searching');
+              home.search.res._onload=0;
+            }));
+            return true;
+          }
           if (__SD9){
             // Anikage direct API search
             var kw=home.search.kw.value;
@@ -16567,6 +16945,10 @@ const home={
                   });
                 }
                 home.search.dosearch_parse_rd(rd);
+                if (rd.length===0 && _MAL.isAniListDown && _MAL.isAniListDown()){
+                  _API.showToast('AniList no disponible (403). Cambia a Hentaila o VeoHentai.');
+                  home.search.res.setAttribute('list-title','AniList no disponible');
+                }
                 if (home.search.history.add(kw)){
                   home.search.src.init_search_history();
                 }
@@ -18538,9 +18920,15 @@ const _MAL={
     }
     var xhttp = new XMLHttpRequest();
     xhttp.onload = function() {
+        var txt=xhttp.responseText||'';
+        if ((txt.indexOf('temporarily disabled')>=0) || (xhttp.status==403)){
+          _MAL.anilist_down(txt);
+          cb(null);
+          return;
+        }
         xhttp.ok=true;
         try{
-          var v=JSON.parse(xhttp.responseText);
+          var v=JSON.parse(txt);
           if (v && v.error && v.error.status==500){
             // retry
             if (retry<4){
@@ -18587,6 +18975,23 @@ const _MAL={
       })));
       xhttp.send();
     }
+  },
+  anilist_down:function(txt){
+    _MAL.unavailable=Date.now();
+    try{
+      var j=JSON.parse(txt||'');
+      if (j && j.errors && j.errors[0] && j.errors[0].message){
+        _MAL.unavailableMsg=j.errors[0].message;
+      }
+    }catch(e){}
+    console.log('ATVLOG AniList unavailable: '+(_MAL.unavailableMsg||'403'));
+    if (!_MAL.downToastShown){
+      _MAL.downToastShown=true;
+      _API.showToast('AniList no disponible (403). Cambia a Hentaila o VeoHentai.');
+    }
+  },
+  isAniListDown:function(){
+    return !!(_MAL.unavailable && ((Date.now()-_MAL.unavailable)<300000));
   },
   alset_list:function(id, stat, cb){
     _MAL.alreq(`mutation($id: Int){
@@ -19788,11 +20193,11 @@ query ($weekStart: Int, $weekEnd: Int, $page: Int, $perPage: Int) {
         });
         return;
       }
-      else if (__SD9){
+      else if (__SD9||__SDCAT){
         requestAnimationFrame(function(){
           var o=[{
-            url:dmedia.id+'',
-            tip:dmedia.id+'',
+            url:__SDCAT?(dmedia.key||dmedia.id):dmedia.id+'',
+            tip:__SDCAT?(dmedia.key||dmedia.id):dmedia.id+'',
             title:dmedia.title.english,
             title_jp:dmedia.title.romaji,
             poster:dmedia.coverImage.medium,
@@ -20672,7 +21077,7 @@ query ($weekStart: Int, $weekEnd: Int, $page: Int, $perPage: Int) {
         epsel=_MAL.pop.var.ep;
       }
 
-      openurl+=(__SDKAI||__SD3||__SD5||__SD6||__SD7||__SD8||__SD9)?('#'+epsel):('/ep-'+epsel);
+      openurl+=(__SDKAI||__SD3||__SD5||__SD6||__SD7||__SD8||__SD9||__SDCAT)?('#'+epsel):('/ep-'+epsel);
 
       console.log("MAL Open Anime = "+openurl);
       _MAL.popup_close();
@@ -22167,7 +22572,7 @@ const touchHelper={
     }
     window._ELECTRON_CHECK_UPDATE=function(ismenu){
       _JSAPI.storeSet('__noautoupdate','0');
-      $ap('https://raw.githubusercontent.com/BrutalBotX/AnimeTV/refs/heads/master/server.json',function(r){
+      $ap('https://raw.githubusercontent.com/MasterVitronic/AnimeTV/refs/heads/master/server.json',function(r){
         if (r.ok){
           try{
             var update=JSON.parse(r.responseText);

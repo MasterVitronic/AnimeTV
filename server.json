@@ -8,12 +8,12 @@
   "stream_domain2": "megaf.cc",
   "update": "1.1-240624",
 
-  "appnum": 615,
-  "appver": "6.1.5-MV",
+  "appnum": 626,
+  "appver": "6.2.6-MV",
   "appsize": "6.2 MB",
-  "appurl": "https://github.com/MasterVitronic/AnimeTV/releases/download/6.1.5-MV/animemv-6.1.5-release.apk",
+  "appurl": "https://github.com/MasterVitronic/AnimeTV/releases/download/6.2.6-MV/animemv-6.2.6-release.apk",
   "appnote":
-    "- Catalogo limpio: fuera Senshi y AniBD (muertos) y Anikai (Cloudflare)\n- Proveedores activos: Miruro (bonk..hop) y anikoto, reanime, anizone, animegg, anineko, 2dhive",
+    "- AnimeAV1: resolucion MP4 y fallback SUB/DUB\n- TioAnime sigue como proveedor lider; AnimeAV1 queda detras\n- Nota: AnimeAV1 sirve AV1/H.264 10-bit y el mt5867 no los decodifica",
 
   "pcnum": 600,
   "pcver": "6.0.0",

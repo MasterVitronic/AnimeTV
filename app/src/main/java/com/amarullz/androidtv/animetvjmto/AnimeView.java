@@ -96,6 +96,8 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 
 import com.miruronative.data.AppGraph;
+import com.miruronative.data.catalog.CatalogBridge;
+import com.miruronative.data.catalog.CatalogRegistry;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
@@ -464,6 +466,14 @@ import javax.crypto.spec.SecretKeySpec;
         (AudioManager) activity.getSystemService(Context.AUDIO_SERVICE);
 
     chromeClient=new WebChromeClient() {
+      @Override
+      public boolean onConsoleMessage(android.webkit.ConsoleMessage cm) {
+        // Keep the WebView console visible in logcat: the UI is the only way to debug playback
+        // routing on a TV, where there is no devtools window.
+        Log.d("ATVLOG-WEB", cm.message() + " (" + cm.sourceId() + ":" + cm.lineNumber() + ")");
+        return true;
+      }
+
       @Override public Bitmap getDefaultVideoPoster() {
         final Bitmap bitmap = Bitmap.createBitmap(1, 1, Bitmap.Config.RGB_565);
         Canvas canvas = new Canvas(bitmap);
@@ -769,10 +779,12 @@ import javax.crypto.spec.SecretKeySpec;
           settings.put("Referer", videoReferer);
         }
 
-        // When the provider supplied a referer, trust it as the authoritative Origin
-        // (the CDN expects the same Origin the browser/probe sends, not a host guess).
+        // When the provider supplied a referer, trust it as the authoritative Origin AND Referer
+        // (the CDN expects the same pair the browser/probe sends, not a host guess). Setting only
+        // Origin leaves a host-guessed Referer in place, and hosts like vidcache answer 500 to it.
         if (videoReferer != null){
           settings.put("Origin", videoReferer);
+          settings.put("Referer", videoReferer);
         }
       } catch (MalformedURLException ignored) {}
       Log.d(_TAG,"VIDEO-DATA-SOURCE : "+videoStatCurrentUrl+" / ORIGIN : "+settings.get("Origin")+" / REFERER : "+settings.get("Referer"));
@@ -2084,7 +2096,13 @@ import javax.crypto.spec.SecretKeySpec;
       AsyncTask.execute(() -> {
         try {
           int anilistId = Integer.parseInt(slug.replaceAll("[^0-9]", ""));
-          String result = AnililiBridge.getView(anilistId);
+          String result;
+          com.miruronative.data.catalog.CatalogRegistry.Ref ref = CatalogRegistry.INSTANCE.refFor(anilistId);
+          if (ref != null) {
+            result = CatalogBridge.INSTANCE.view(ref.getSource(), ref.getKey());
+          } else {
+            result = AnililiBridge.getView(anilistId);
+          }
           final String js = "__EXT_DISPATCH(" + cbId + "," + JSONObject.quote(result) + ");";
           activity.runOnUiThread(() -> webView.evaluateJavascript(js, null));
         } catch (Exception e) {
@@ -2103,7 +2121,13 @@ import javax.crypto.spec.SecretKeySpec;
       AsyncTask.execute(() -> {
         try {
           int anilistId = Integer.parseInt(slug.replaceAll("[^0-9]", ""));
-          String result = AnililiBridge.getVideoSources(anilistId, epNum, subType);
+          String result;
+          com.miruronative.data.catalog.CatalogRegistry.Ref ref = CatalogRegistry.INSTANCE.refFor(anilistId);
+          if (ref != null) {
+            result = CatalogBridge.INSTANCE.video(ref.getSource(), ref.getKey(), epNum, subType);
+          } else {
+            result = AnililiBridge.getVideoSources(anilistId, epNum, subType);
+          }
           final String js = "__EXT_DISPATCH(" + cbId + "," + JSONObject.quote(result) + ");";
           activity.runOnUiThread(() -> webView.evaluateJavascript(js, null));
         } catch (Exception e) {
@@ -2124,14 +2148,43 @@ import javax.crypto.spec.SecretKeySpec;
           String result = query.isEmpty() ?
               AnililiBridge.getPopular(page) :
               AnililiBridge.search(query, page);
-          final String js = "__EXT_DISPATCH(" + cbId + "," + JSONObject.quote(result) + ");";
-          activity.runOnUiThread(() -> webView.evaluateJavascript(js, null));
+          dispatchCatalog(cbId, result);
         } catch (Exception e) {
           Log.e(_TAG, "extSearch error: " + e.getMessage());
           final String js = "__EXT_DISPATCH(" + cbId + ",\"[]\");";
           activity.runOnUiThread(() -> webView.evaluateJavascript(js, null));
         }
       });
+    }
+
+    private void dispatchCatalog(int cbId, String result){
+      final String js = "__EXT_DISPATCH(" + cbId + "," + JSONObject.quote(result) + ");";
+      activity.runOnUiThread(() -> webView.evaluateJavascript(js, null));
+    }
+
+    @JavascriptInterface
+    public void extCatalogList(int cbId){
+      AsyncTask.execute(() -> dispatchCatalog(cbId, CatalogBridge.INSTANCE.list()));
+    }
+
+    @JavascriptInterface
+    public void extCatalogHome(String source, int page, int cbId){
+      AsyncTask.execute(() -> dispatchCatalog(cbId, CatalogBridge.INSTANCE.home(source, page)));
+    }
+
+    @JavascriptInterface
+    public void extCatalogSearch(String source, String query, int page, int cbId){
+      AsyncTask.execute(() -> dispatchCatalog(cbId, CatalogBridge.INSTANCE.search(source, query, page)));
+    }
+
+    @JavascriptInterface
+    public void extCatalogView(String source, String key, int cbId){
+      AsyncTask.execute(() -> dispatchCatalog(cbId, CatalogBridge.INSTANCE.view(source, key)));
+    }
+
+    @JavascriptInterface
+    public void extCatalogVideo(String source, String key, int ep, String audio, int cbId){
+      AsyncTask.execute(() -> dispatchCatalog(cbId, CatalogBridge.INSTANCE.video(source, key, ep, audio)));
     }
   }
 

@@ -16,9 +16,11 @@ object ProviderCatalog {
     )
     private val miruroEmbed = setOf("nun", "bun", "twin", "cog", "telli")
 
-    // Anivexa providers we query (reliable, self-hosted sources).
+    // Anivexa providers we query. Audited 2026-10-20: senshi.live and
+    // epeng.animeapps.top (AniBD) are dead, anikai is behind Cloudflare, and
+    // allanime/kaa have no native implementation, so they are not queried.
     val anivexaProviders = listOf(
-        "senshi", "anibd", "anikoto", "kaa", "allanime", "animekai", "reanime", "anizone", "animegg", "anineko", "2dhive",
+        "anikoto", "reanime", "anizone", "animegg", "anineko", "2dhive",
     )
 
     // Providers whose resolution drives the hidden resolver WebView rather than plain HTTP. That
@@ -29,7 +31,7 @@ object ProviderCatalog {
     // The consistently quick Anivexa lookups (API-backed, not full-page scrapers). Raced as an
     // early partial catalog when the Miruro pipe is down or slow, so playback never waits for
     // the 15-second stragglers; the remaining providers still merge in behind.
-    val fastAnivexaProviders = listOf("senshi", "anibd", "anikoto", "kaa")
+    val fastAnivexaProviders = listOf("anikoto")
 
     // Providers that consistently resolve and start quickly: the Miruro pipe's native HLS set
     // (one pipe call away) and the API-backed Anivexa lookups. Embeds and full-page scrapers
@@ -44,7 +46,7 @@ object ProviderCatalog {
     // After the leaders, fast providers sort before embeds and slow scrapers so the quick
     // options are always at the top of the server list. A user's saved favourite provider
     // always overrides this order.
-    private val leaders = listOf("bonk", "anibd", "senshi")
+    private val leaders = listOf("bonk", "anikoto", "2dhive")
     private val order = leaders +
         (miruroOrder + anivexaProviders).filterNot { it in leaders }
             .sortedByDescending { it in fastProviders }

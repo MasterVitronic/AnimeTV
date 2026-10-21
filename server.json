@@ -8,12 +8,12 @@
   "stream_domain2": "megaf.cc",
   "update": "1.1-240624",
 
-  "appnum": 614,
-  "appver": "6.1.4-MV",
-  "appsize": "14 MB",
-  "appurl": "https://github.com/MasterVitronic/AnimeTV/releases/download/6.1.4-MV/animemv-6.1.4-release.apk",
+  "appnum": 615,
+  "appver": "6.1.5-MV",
+  "appsize": "6.2 MB",
+  "appurl": "https://github.com/MasterVitronic/AnimeTV/releases/download/6.1.5-MV/animemv-6.1.5-release.apk",
   "appnote":
-    "- AnimeMV: fork personal con firma propia, Java 17 y keystore publica eliminada\n- Sin cambios de proveedores en esta version",
+    "- Catalogo limpio: fuera Senshi y AniBD (muertos) y Anikai (Cloudflare)\n- Proveedores activos: Miruro (bonk..hop) y anikoto, reanime, anizone, animegg, anineko, 2dhive",
 
   "pcnum": 600,
   "pcver": "6.0.0",

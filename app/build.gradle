@@ -19,12 +19,12 @@ android {
         applicationId "com.amarullz.androidtv.animetvjmto"
         minSdk 22
         targetSdk 34
-        versionCode 614
-        versionName "6.1.4-MV"
+        versionCode 615
+        versionName "6.1.5-MV"
 
         // Automatic Build Version
         buildConfigField "long", "TIMESTAMP", System.currentTimeMillis() + "L"
-        setProperty("archivesBaseName", "animemv-6.1.4")
+        setProperty("archivesBaseName", "animemv-6.1.5")
     }
 
     signingConfigs {

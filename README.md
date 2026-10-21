@@ -11,7 +11,7 @@ Optimized for TV interfaces with full remote control navigation. No ads. No data
 >
 > - Firma de release **propia**, fuera del repositorio; la keystore de debug pública se ha eliminado.
 > - Java 17 y Gradle 8.13; compila en Linux sin rutas de Windows.
-> - `server.json` propio con versión `6.1.4-MV`; el autoupdate no ofrece nada mientras
+> - `server.json` propio con versión `6.1.5-MV`; el autoupdate no ofrece nada mientras
 >   no se publique esa versión.
 > - CI de Android (debug en cada push, release firmada manual).
 >

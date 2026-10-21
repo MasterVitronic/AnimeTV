@@ -1,4 +1,12 @@
 # Changelogs
+- **6.1.5-MV (AnimeMV)** 🩺
+  - **Auditoria de proveedores (2026-10-20)**
+    - Senshi (`senshi.live`): sin respuesta → retirado del catalogo
+    - AniBD (`epeng.animeapps.top`): web cerrada ("website has been stopped") → retirado
+    - Anikai: Cloudflare y parser obsoleto → retirado hasta reimplementarlo
+    - AllAnime y KickAssAnime: sin implementacion nativa → fuera del catalogo
+    - Activos: Miruro (bonk..hop), Anikoto, Reanime, Anizone, AnimeGG, Anineko, 2Dhive
+    - Verificado en TV: Bonk reproduce Red River correctamente
 - **6.1.4-MV (AnimeMV)** 🔧
   - **Fork personal de MasterVitronic**
     - Firma de release propia, fuera del repositorio; eliminada la keystore de debug pública

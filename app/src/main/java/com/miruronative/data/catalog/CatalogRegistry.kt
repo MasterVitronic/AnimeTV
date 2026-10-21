@@ -14,6 +14,7 @@ object CatalogRegistry {
 
     init {
         register(TioAnimeSource())
+        register(AnimeFlvSource())
         register(HentailaSource())
         register(VeoHentaiSource())
     }

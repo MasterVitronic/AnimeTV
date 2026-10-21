@@ -5,7 +5,7 @@ public class Conf {
   public static String[] SOURCE_DOMAINS={
       "anilist.co", /* default */
       "anilist.co", "", "", "", "", "", "", "anilist.co", /* indices 1-9, Anilili at 9 */
-      "catalogo", "catalogo", "catalogo", "catalogo" /* 10-12: catálogos propios */
+      "catalogo", "catalogo", "catalogo", "catalogo", "catalogo" /* 10-13: catálogos propios */
   };
   public static String SOURCE_DOMAIN5_API = "api.animeflix.dev";
   public static int SOURCE_DOMAIN = 9;

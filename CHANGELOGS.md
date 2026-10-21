@@ -1,4 +1,11 @@
 # Changelogs
+- **6.3.6-MV (AnimeMV)** 🇪🇸
+  - **Nueva fuente: AnimeFLV (animeflv.or.at)**
+    - Home con últimos episodios y archivo de series `/anime/page/N/`
+    - Ficha con sinopsis, póster y lista de episodios
+    - Búsqueda local sobre el archivo (la búsqueda de WordPress no indexa las series)
+    - Reproducción por **Voe**: JSON ofuscado (rot13 + tokens + base64 + shift + reverse) → HLS firmado 720p H.264 High 3.1
+    - Zilla (segmentos bloqueados por Cloudflare) y MP4Upload (AV1 10-bit) se descartan
 - **6.3.5-MV (AnimeMV)** 🇪🇸
   - **Nueva fuente: TioAnime como catálogo completo (sin AniList)**
     - Home ("Últimos Animes"), búsqueda por `/directorio?q=`, ficha y episodios

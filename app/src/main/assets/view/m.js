@@ -10,7 +10,7 @@ const __SD5=false;
 const __SD=(function(){
   try{
     var s=_JSAPI.getSd();
-    if (s>=9 && s<=12) return s;
+    if (s>=9 && s<=13) return s;
   }catch(e){}
   return 9;
 })();
@@ -24,6 +24,7 @@ function __SDCAT_SOURCE(){
   if (__SD==10) return 'veohentai';
   if (__SD==11) return 'hentaila';
   if (__SD==12) return 'tioanime';
+  if (__SD==13) return 'animeflv';
   return '';
 }
 
@@ -50,11 +51,11 @@ var _TOUCH=false;
 var _ISELECTRON=('isElectron' in _JSAPI);
 
 const __SOURCE_NAME=[
-  '', '', '', '', '', '', '', '', 'Anilili', 'VeoHentai', 'Hentaila', 'TioAnime'
+  '', '', '', '', '', '', '', '', 'Anilili', 'VeoHentai', 'Hentaila', 'TioAnime', 'AnimeFLV'
 ];
 
 const __SOURCE_DOMAINS=[
-  [],[],[],[],[],[],[],[],['anilist.co'],[],[],[]
+  [],[],[],[],[],[],[],[],['anilist.co'],[],[],[],[]
 ];
 
 /* video res change */
@@ -16878,11 +16879,14 @@ const home={
                 var media=v.data.Page.media;
                 for (var i=0;i<media.length;i++){
                   var d=media[i];
+                  // Actions must carry the source key (slug), not the synthetic numeric id:
+                  // the popup and player resolve catalog items by key.
+                  var dkey=d.key?(''+d.key):(''+d.id);
                   rd.push({
-                    url:''+d.id,
+                    url:dkey,
                     title:(d.title&&(d.title.english||d.title.romaji))||'',
                     title_jp:(d.title&&d.title.romaji)||'',
-                    tip:''+d.id,
+                    tip:dkey,
                     poster:(d.coverImage&&d.coverImage.large)||'',
                     epsub:''+(d.episodes||0),
                     epdub:'0',

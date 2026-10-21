@@ -10,7 +10,7 @@ const __SD5=false;
 const __SD=(function(){
   try{
     var s=_JSAPI.getSd();
-    if (s>=9 && s<=11) return s;
+    if (s>=9 && s<=12) return s;
   }catch(e){}
   return 9;
 })();
@@ -23,6 +23,7 @@ const __SDCAT=(__SD>=10);
 function __SDCAT_SOURCE(){
   if (__SD==10) return 'veohentai';
   if (__SD==11) return 'hentaila';
+  if (__SD==12) return 'tioanime';
   return '';
 }
 
@@ -49,11 +50,11 @@ var _TOUCH=false;
 var _ISELECTRON=('isElectron' in _JSAPI);
 
 const __SOURCE_NAME=[
-  '', '', '', '', '', '', '', '', 'Anilili', 'VeoHentai', 'Hentaila'
+  '', '', '', '', '', '', '', '', 'Anilili', 'VeoHentai', 'Hentaila', 'TioAnime'
 ];
 
 const __SOURCE_DOMAINS=[
-  [],[],[],[],[],[],[],[],['anilist.co'],[],[]
+  [],[],[],[],[],[],[],[],['anilist.co'],[],[],[]
 ];
 
 /* video res change */
@@ -9429,10 +9430,11 @@ const pb={
         cat.loadVideo(pb.data, function(v){
           console.log('ATVLOG CATALOG LOAD VIDEO: ',v);
           if (!v || v.error){
-            pb.playback_error(
-              'PLAYBACK ERROR',
-              (v&&v.error)?(''+v.error):"Loading video from source failed.\nTry changing mirror or check source server."
-            );
+            var cmsg=(v&&v.error)?(''+v.error):"Loading video from source failed.\nTry changing mirror or check source server.";
+            if (/no direct source|no players|no source|404|403|content restricted/i.test(cmsg)){
+              cmsg="Este episodio no tiene una fuente compatible con la TV.\nPrueba otro episodio o cambia de fuente.";
+            }
+            pb.playback_error('PLAYBACK ERROR',cmsg);
             return;
           }
           vtt.clear();

@@ -13,6 +13,7 @@ object CatalogRegistry {
     private var nextId = 910_000_000
 
     init {
+        register(TioAnimeSource())
         register(HentailaSource())
         register(VeoHentaiSource())
     }

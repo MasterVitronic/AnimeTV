@@ -29,8 +29,11 @@ internal class TioAnimeProvider(private val client: OkHttpClient) {
         return EpisodeAvailability(sub = episodes, dub = emptySet())
     }
 
-    fun sources(media: Media, audio: String, episode: Int): SourcesResult {
-        val slug = slug(media)
+    fun sources(media: Media, audio: String, episode: Int): SourcesResult =
+        sourcesForSlug(slug(media), episode)
+
+    /** Same resolution as [sources], but keyed by the site slug (used by the catalog source). */
+    fun sourcesForSlug(slug: String, episode: Int): SourcesResult {
         val html = get("$BASE/ver/$slug-$episode", "$BASE/anime/$slug")
         val videos = parseVideos(html)
         if (videos.isEmpty()) error("TioAnime episode $episode has no players")

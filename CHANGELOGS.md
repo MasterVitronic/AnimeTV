@@ -1,4 +1,10 @@
 # Changelogs
+- **6.3.5-MV (AnimeMV)** 🇪🇸
+  - **Nueva fuente: TioAnime como catálogo completo (sin AniList)**
+    - Home ("Últimos Animes"), búsqueda por `/directorio?q=`, ficha y episodios
+    - Reproducción 720p H.264 High 4.0 8-bit vía YourUpload (ya verificado en TV)
+    - Reutiliza `TioAnimeProvider` con el nuevo `sourcesForSlug`
+    - Permite seguir viendo anime en español mientras AniList está caído
 - **6.3.4-MV (AnimeMV)** 🛟
   - **AniList caído: degradación limpia**
     - AniList responde `403 "temporarily disabled due to severe stability issues"`
